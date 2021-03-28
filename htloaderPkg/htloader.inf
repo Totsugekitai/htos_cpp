@@ -1,0 +1,23 @@
+[Defines]
+INF_VERSION             = 0x00010005
+BASE_NAME               = Loader
+FILE_GUID               = 0cceeb26-ac44-4f47-b722-a2ca525aca77
+MODULE_TYPE             = UEFI_APPLICATION
+VERSION_STRING          = 0.1
+ENTRY_POINT             = UefiMain
+
+[Sources]
+bootinfo.h
+htloader.c
+htloader.h
+elf.c
+elf.h
+mem.c
+mem.h
+
+[Packages]
+MdePkg/MdePkg.dec
+
+[LibraryClasses]
+UefiLib
+UefiApplicationEntryPoint
