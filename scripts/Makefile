@@ -20,10 +20,9 @@ MAKEFILE_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 
 ### Makefile_template end ###
 
-.PHONY: kernel
-kernel: Makefile
-> make -C kernel/
-
-.PHONY: clean
-clean: Makefile
-> make -C kernel/ clean
+.PHONY: install-stdlib
+install-stdlib: Makefile
+> export HTOS_THIRD_PARTY=$(MAKEFILE_DIR)/../third_party
+> ./install_newlib.sh
+> ./install_libcxxabi.sh
+> ./install_libcxx.sh
