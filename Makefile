@@ -20,6 +20,10 @@ MAKEFILE_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 
 ### Makefile_template end ###
 
+.PHONY: run
+run: Makefile
+> 
+
 .PHONY: kernel
 kernel: Makefile
 > make -C kernel/
