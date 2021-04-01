@@ -23,8 +23,8 @@ MAKEFILE_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 TARGET := htos.elf
 ENTRY_POINT := kernel_entry
 
-LIBCXX_INCLUDE_PATH := $(HTOS_THIRD_PARTY)/x86_64-elf/include/c++/v1
-NEWLIB_INCLUDE_PATH := $(HTOS_THIRD_PARTY)/x86_64-elf/include
+LIBCXX_INCLUDE_PATH := $(HTOS_ROOT)/third_party/x86_64-elf/include/c++/v1
+NEWLIB_INCLUDE_PATH := $(HTOS_ROOT)/third_party/x86_64-elf/include
 
 CXX := clang++
 CXXFLAGS += -O2 -Wall --target=x86_64-elf -ffreestanding -mno-red-zone -fno-exceptions -fno-rtti -std=c++17 -I$(LIBCXX_INCLUDE_PATH) -I$(NEWLIB_INCLUDE_PATH) -nostdlibinc -D__ELF__ -D_LDBL_EQ_DBL -D_GNU_SOURCE -D_POSIX_TIMERS

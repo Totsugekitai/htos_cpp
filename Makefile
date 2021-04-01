@@ -22,7 +22,8 @@ MAKEFILE_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 
 .PHONY: run
 run: Makefile
-> 
+> ./scripts/make_image.sh disk.img mnt BOOTX64.EFI kernel/htos.elf
+> ./scripts/run_image.sh disk.img
 
 .PHONY: kernel
 kernel: Makefile

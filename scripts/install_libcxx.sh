@@ -3,17 +3,17 @@
 LLVM_VERSION=10.0.0-rc6
 LLVM_DIR=${HTOS_THIRD_PARTY}/src/llvm-${LLVM_VERSION}
 
-cd $HTOS_THIRD_PARTY
+cd $HTOS_ROOT/third_party
 if [ ! -e ${LLVM_DIR} ]; then
     mkdir -p src
     git clone --depth 1 --branch llvmorg-${LLVM_VERSION} https://github.com/llvm/llvm-project.git ${LLVM_DIR}
 fi
 
 LIBCXX=libc++-${LLVM_VERSION}
-LIBCXX_BUILD_DIR=${HTOS_THIRD_PARTY}/build/${LIBCXX}
+LIBCXX_BUILD_DIR=${HTOS_ROOT}/scripts/build/${LIBCXX}
 LIBCXX_SRC_DIR=${LLVM_DIR}/libcxx
 
-NEWLIB_OUT_DIR=${HTOS_THIRD_PARTY}/x86_64-elf
+NEWLIB_OUT_DIR=${HTOS_ROOT}/scripts/x86_64-elf
 NEWLIB_INC_PATH=${NEWLIB_OUT_DIR}/include
 
 mkdir -p ${LIBCXX_BUILD_DIR}
