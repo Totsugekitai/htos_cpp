@@ -20,6 +20,11 @@ MAKEFILE_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 
 ### Makefile_template end ###
 
+.PHONY: default
+default: Makefile
+> make kernel
+> make run
+
 .PHONY: run
 run: Makefile
 > ./scripts/make_image.sh disk.img mnt BOOTX64.EFI kernel/htos.elf

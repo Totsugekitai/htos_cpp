@@ -6,11 +6,12 @@
 #include "graphics.hpp"
 #include "font.hpp"
 #include "console.hpp"
+#include "pci.hpp"
 
 char console_buf[sizeof(console::Console)];
 console::Console* con;
 
-void* operator new(size_t size, void* buf) { return buf; }
+//void* operator new(size_t size, void* buf) { return buf; }
 void operator delete(void* obj) noexcept {}
 
 int printk(const char *fmt, ...) {
@@ -34,10 +35,20 @@ extern "C" void kernel_entry(const boot::bootinfo_t& binfo) {
                                   graphics::VIDEO.GetVerticalResolution(),
                                   {{0x00, 0x00, 0x00}, 0x00});
 
-    con = new(console_buf) console::Console(graphics::VIDEO, {{0xff, 0xff, 0xff}, 0x00}, {{0x00, 0x00, 0x00}, 0x00});
+    con = new(console_buf) console::Console{graphics::VIDEO};
 
-    for (int i = 0; i < 24; ++i) {
-        printk("printk: %d\n", i);
+    printk("Welcome to HTOS!\n");
+
+    auto err = pci::ScanAllBus();
+    printk("ScanAllBus: %s\n", err.Name());
+
+    for (int i = 0; i < pci::num_device; ++i) {
+        const auto& dev = pci::devices[i];
+        auto vendor_id = pci::ReadVendorId(dev.bus, dev.device, dev.function);
+        auto class_code = pci::ReadClassCode(dev.bus, dev.device, dev.function);
+        printk("%d.%d.%d: vend %04x, class %08x, head %02x\n",
+               dev.bus, dev.device, dev.function,
+               vendor_id, class_code, dev.header_type);
     }
 
     while (1) __asm__ volatile("hlt");

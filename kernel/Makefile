@@ -38,7 +38,7 @@ AS := nasm
 LD := ld.lld
 LDFLAGS += -T linker.ld -L$(LIBPATH) -z norelro -static
 
-OBJS := main.o graphics.o font.o fonts.gen.o newlib_support.o console.o $(LIBPATH)/libc++.a $(LIBPATH)/libc++abi.a $(LIBPATH)/libc.a asmfunc.o
+OBJS := main.o graphics.o font.o fonts.gen.o newlib_support.o console.o $(LIBPATH)/libc++.a $(LIBPATH)/libc++abi.a $(LIBPATH)/libc.a asmfunc.o pci.o
 
 .PHONY: default
 default: Makefile
