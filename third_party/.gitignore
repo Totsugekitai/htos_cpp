@@ -2,3 +2,4 @@ x86_64-elf/
 build/
 src/
 edk2/
+OVMF_*.fd
