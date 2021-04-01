@@ -25,14 +25,18 @@ ENTRY_POINT := kernel_entry
 
 LIBCXX_INCLUDE_PATH := $(HTOS_ROOT)/third_party/x86_64-elf/include/c++/v1
 NEWLIB_INCLUDE_PATH := $(HTOS_ROOT)/third_party/x86_64-elf/include
+LIBPATH := $(HTOS_ROOT)/third_party/x86_64-elf/lib
+
+CC := clang
+CFLAGS += -O2 -Wall --target=x86_64-elf -ffreestanding -mno-red-zone -std=c11 -I$(LIBCXX_INCLUDE_PATH) -I$(NEWLIB_INCLUDE_PATH) -nostdlibinc -D__ELF__ -D_LDBL_EQ_DBL -D_GNU_SOURCE -D_POSIX_TIMERS
 
 CXX := clang++
 CXXFLAGS += -O2 -Wall --target=x86_64-elf -ffreestanding -mno-red-zone -fno-exceptions -fno-rtti -std=c++17 -I$(LIBCXX_INCLUDE_PATH) -I$(NEWLIB_INCLUDE_PATH) -nostdlibinc -D__ELF__ -D_LDBL_EQ_DBL -D_GNU_SOURCE -D_POSIX_TIMERS
 
 LD := ld.lld
-LDFLAGS += -T linker.ld -z norelro -static
+LDFLAGS += -T linker.ld -L$(LIBPATH) -z norelro -static
 
-OBJS := main.o graphics.o font.o fonts.gen.o
+OBJS := main.o graphics.o font.o fonts.gen.o newlib_support.o console.o $(LIBPATH)/libc++.a $(LIBPATH)/libc++abi.a $(LIBPATH)/libc.a
 
 .PHONY: default
 default: Makefile
@@ -44,6 +48,9 @@ $(TARGET): $(OBJS) Makefile
 
 %.o: %.cpp Makefile
 > $(CXX) $(CXXFLAGS) -o $@ -c $<
+
+%.o: %.c Makefile
+> $(CC) $(CFLAGS) -o $@ -c $<
 
 .PHONY: kernel
 kernel: Makefile

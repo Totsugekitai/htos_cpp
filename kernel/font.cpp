@@ -6,21 +6,25 @@
 extern const uint8_t fonts[0x100][16];
 
 namespace font {
-    const uint8_t* GetFont(char c) {
-        return reinterpret_cast<const uint8_t*>(fonts[(int)c]);
-    }
+const uint8_t* GetFont(char c) {
+    return reinterpret_cast<const uint8_t*>(fonts[(int)c]);
+}
 
-    void WriteAscii(graphics::Video& video, uint32_t x, uint32_t y, char c) {
-        const uint8_t* font = GetFont(c);
-        for (int dy = 0; dy < 16; ++dy) {
-            for (int dx = 0; dx < 8; ++dx) {
-                if (font[dy] << dx & 0b10000000) {
-                    graphics::VIDEO.WritePixel(x + dx, y + dy, {{0xff, 0xff, 0xff}, 0x00});
-                } else {
-                    graphics::VIDEO.WritePixel(x + dx, y + dy, {{0x00, 0x00, 0x00}, 0x00});
-                }
+void WriteAscii(graphics::Video& video, uint32_t x, uint32_t y, char c) {
+    const uint8_t* font = GetFont(c);
+    for (int dy = 0; dy < 16; ++dy) {
+        for (int dx = 0; dx < 8; ++dx) {
+            if (font[dy] << dx & 0b10000000) {
+                graphics::VIDEO.WritePixel(x + dx, y + dy, {{0xff, 0xff, 0xff}, 0x00});
+            } else {
+                graphics::VIDEO.WritePixel(x + dx, y + dy, {{0x00, 0x00, 0x00}, 0x00});
             }
         }
     }
-
+}
+void WriteString(graphics::Video& video, uint32_t x, uint32_t y, const char* s) {
+    for (int i = 0; s[i] != '\0'; ++i) {
+        WriteAscii(graphics::VIDEO, x + i * 8, y, s[i]);
+    }
+}
 } // namespace font
