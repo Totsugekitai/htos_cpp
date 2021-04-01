@@ -11,9 +11,11 @@ public:
     void set(const boot::videoinfo_t& vinfo);
     void WritePixel(uint32_t x, uint32_t y, const boot::pixel_t& color);
     void FillRectangle(uint32_t x, uint32_t y, uint32_t xlen, uint32_t ylen, const boot::pixel_t& color);
+    uint32_t GetHorizonalResolution();
+    uint32_t GetVerticalResolution();
 private:
     boot::videoinfo_t vinfo_;
-};
+}; // class Video
 inline Video VIDEO;
 } // namespace graphics
 

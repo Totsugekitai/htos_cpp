@@ -23,4 +23,12 @@ void Video::FillRectangle(uint32_t x, uint32_t y, uint32_t xlen, uint32_t ylen, 
         }
     }
 }
+
+uint32_t Video::GetHorizonalResolution() {
+    return this->vinfo_.horizonal_resolution;
+}
+
+uint32_t Video::GetVerticalResolution() {
+    return this->vinfo_.vertical_resolution;
+}
 } // namespace graphics

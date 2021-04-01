@@ -32,7 +32,7 @@ CXXFLAGS += -O2 -Wall --target=x86_64-elf -ffreestanding -mno-red-zone -fno-exce
 LD := ld.lld
 LDFLAGS += -T linker.ld -z norelro -static
 
-OBJS := main.o graphics.o
+OBJS := main.o graphics.o font.o fonts.gen.o
 
 .PHONY: default
 default: Makefile
