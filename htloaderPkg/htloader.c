@@ -131,7 +131,6 @@ UefiMain(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable)
     // カーネルに渡す情報をレジスタに格納
     // スタックポインタを設定しカーネルへジャンプ
     kernel_entry(&binfo);
-    //jump_to_kernel(&binfo, start_addr);
 
     return EFI_SUCCESS;
 }
