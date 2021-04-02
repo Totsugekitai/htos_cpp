@@ -28,27 +28,6 @@ int printk(const char *fmt, ...) {
     return result;
 }
 
-void SwitchEhci2Xhci(const pci::Device& xhc_dev) {
-    bool intel_ehc_exist = false;
-    for (int i = 0; i < pci::num_device; ++i) {
-        if (pci::devices[i].class_code.Match(0x0cu, 0x03u, 0x20u) /* EHCI */ &&
-            0x8086 == pci::ReadVendorId(pci::devices[i])) {
-            intel_ehc_exist = true;
-            break;
-        }
-    }
-    if (!intel_ehc_exist) {
-        return;
-    }
-
-    uint32_t superspeed_ports = pci::ReadConfReg(xhc_dev, 0xdc); // USB3PRM
-    pci::WriteConfReg(xhc_dev, 0xd8, superspeed_ports); // USB3_PSSEN
-    uint32_t ehci2xhci_ports = pci::ReadConfReg(xhc_dev, 0xd4); // XUSB2PRM
-    pci::WriteConfReg(xhc_dev, 0xd0, ehci2xhci_ports); // XUSB2PR
-    logger::Log(logger::kDebug, "SwitchEhci2Xhci: SS = %02, xHCI = %02x\n",
-                superspeed_ports, ehci2xhci_ports);
-}
-
 __attribute__((section(".text.entry")))
 extern "C" void kernel_entry(const boot::bootinfo_t& binfo) {
     graphics::VIDEO.set(binfo.vinfo);

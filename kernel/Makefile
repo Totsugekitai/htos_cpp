@@ -38,17 +38,16 @@ AS := nasm
 LD := ld.lld
 LDFLAGS += -T linker.ld -L$(LIBPATH) -z norelro -static
 
-OBJS := main.o graphics.o font.o fonts.gen.o newlib_support.o console.o asmfunc.o pci.o logger.o
+OBJS := main.o graphics.o font.o fonts.gen.o newlib_support.o console.o asmfunc.o pci.o logger.o ioapic.o
 LIBS := $(LIBPATH)/libc++.a $(LIBPATH)/libc++abi.a $(LIBPATH)/libc.a
-USBS := $(wildcard usb/*.o)
 
 .PHONY: default
 default: Makefile
 > make kernel
 
 .PHONY: $(TARGET)
-$(TARGET): $(OBJS) $(LIBS) $(USBS) Makefile
-> $(LD) $(LDFLAGS) -o $@ $(OBJS) $(LIBS) $(USBS)
+$(TARGET): $(OBJS) $(LIBS) Makefile
+> $(LD) $(LDFLAGS) -o $@ $(OBJS) $(LIBS)
 
 %.o: %.cpp Makefile
 > $(CXX) $(CXXFLAGS) -o $@ -c $<
