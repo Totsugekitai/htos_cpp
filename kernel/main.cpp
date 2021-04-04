@@ -39,7 +39,7 @@ extern "C" void kernel_entry(const boot::bootinfo_t& binfo) {
     con = new(console_buf) console::Console{graphics::VIDEO};
 
     printk("Welcome to HTOS!\n");
-    logger::SetLogLevel(logger::kWarn);
+    logger::SetLogLevel(logger::kDebug);
 
     // PCIのスキャン
     auto err = pci::ScanAllBus();
@@ -48,9 +48,10 @@ extern "C" void kernel_entry(const boot::bootinfo_t& binfo) {
         const auto& dev = pci::devices[i];
         auto vendor_id = pci::ReadVendorId(dev.bus, dev.device, dev.function);
         auto class_code = pci::ReadClassCode(dev.bus, dev.device, dev.function);
-        logger::Log(logger::kDebug, "%d.%d.%d: vend %04x, class %08x, head %02x\n",
-               dev.bus, dev.device, dev.function,
-               vendor_id, class_code, dev.header_type);
+        logger::Log(logger::kDebug, "%d.%d.%d: vend %04x, class %02x,%02x,%02x, head %02x\n",
+                    dev.bus, dev.device, dev.function,
+                    vendor_id, class_code.base, class_code.sub, class_code.interface,
+                    dev.header_type);
     }
 
     while (1) __asm__ volatile("hlt");
