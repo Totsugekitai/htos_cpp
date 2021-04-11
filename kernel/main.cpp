@@ -8,6 +8,9 @@
 #include "console.hpp"
 #include "pci.hpp"
 #include "logger.hpp"
+#include "ioapic.hpp"
+#include "interrupt.hpp"
+#include "asmfunc.hpp"
 
 char console_buf[sizeof(console::Console)];
 console::Console* con;
@@ -53,6 +56,22 @@ extern "C" void kernel_entry(const boot::bootinfo_t& binfo) {
                     vendor_id, class_code.base, class_code.sub, class_code.interface,
                     dev.header_type);
     }
+
+    // IOAPICのデバッグプリント
+    auto ioapic_err = ioapic::SetIOAPICAddress();
+    logger::Log(logger::kDebug, "[%s] I/O APIC Base Addess: 0x%x\n",
+                ioapic_err.error.Name(),
+                ioapic_err.value);
+
+    // IDTの設定
+    const uint16_t cs = GetCS();
+    interrupt::SetIDTEntry(interrupt::IDT[0], interrupt::MakeIDTAttr(interrupt::DescriptorType::kInterruptGate, 0), reinterpret_cast<uint64_t>(interrupt::IntHandlerFirstSerialPort), cs);
+    interrupt::SetIDTEntry(interrupt::IDT[1], interrupt::MakeIDTAttr(interrupt::DescriptorType::kInterruptGate, 0), reinterpret_cast<uint64_t>(interrupt::IntHandlerFirstSerialPort), cs);
+    interrupt::SetIDTEntry(interrupt::IDT[2], interrupt::MakeIDTAttr(interrupt::DescriptorType::kInterruptGate, 0), reinterpret_cast<uint64_t>(interrupt::IntHandlerFirstSerialPort), cs);
+    interrupt::SetIDTEntry(interrupt::IDT[3], interrupt::MakeIDTAttr(interrupt::DescriptorType::kInterruptGate, 0), reinterpret_cast<uint64_t>(interrupt::IntHandlerFirstSerialPort), cs);
+    interrupt::SetIDTEntry(interrupt::IDT[4], interrupt::MakeIDTAttr(interrupt::DescriptorType::kInterruptGate, 0), reinterpret_cast<uint64_t>(interrupt::IntHandlerFirstSerialPort), cs);
+    LoadIDT(sizeof(interrupt::IDT) - 1, reinterpret_cast<uintptr_t>(&interrupt::IDT[0]));
+    logger::Log(logger::kDebug, "IDT Setting done.\n");
 
     while (1) __asm__ volatile("hlt");
 }

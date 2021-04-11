@@ -21,5 +21,7 @@ qemu-system-x86_64 \
     -drive if=ide,index=0,media=disk,format=raw,file=$DISK_IMG \
     -device nec-usb-xhci,id=xhci \
     -device usb-kbd \
-    -monitor stdio \
     -gdb tcp::1234 \
+    -chardev stdio,mux=on,id=com1 \
+    -serial chardev:com1 \
+    -monitor telnet::5555,server,nowait \
