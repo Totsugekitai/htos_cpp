@@ -2,10 +2,11 @@
 
 #include "logger.hpp"
 #include "interrupt.hpp"
+#include "uart.hpp"
 
 namespace {
 void NotifyEndOfInterrupt() {
-    volatile auto end_of_interrupt = reinterpret_cast<uint32_t*>(0xfee000b0);
+    volatile uint32_t* end_of_interrupt = reinterpret_cast<uint32_t*>(0xfee000b0u);
     *end_of_interrupt = 0;
 }
 } // namespace
@@ -29,7 +30,9 @@ InterruptDescriptorAttributes MakeIDTAttr(DescriptorType type, uint8_t dpl) {
 
 __attribute__((interrupt))
 void IntHandlerFirstSerialPort(InterruptFrame* frame) {
-    logger::Log(logger::kDebug, "Serial interrupt\n");
+    char c = uart::getc();
     NotifyEndOfInterrupt();
+
+    logger::Log(logger::kDebug, "%c", c);
 }
 } // namespace interrupt

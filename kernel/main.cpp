@@ -8,9 +8,11 @@
 #include "console.hpp"
 #include "pci.hpp"
 #include "logger.hpp"
+#include "lapic.hpp"
 #include "ioapic.hpp"
 #include "interrupt.hpp"
 #include "asmfunc.hpp"
+#include "uart.hpp"
 
 char console_buf[sizeof(console::Console)];
 console::Console* con;
@@ -57,6 +59,11 @@ extern "C" void kernel_entry(const boot::bootinfo_t& binfo) {
                     dev.header_type);
     }
 
+    // LAPICのデバッグプリント
+    auto apic_base_msr = lapic::ReadIa32ApicBaseMsr();
+    logger::Log(logger::kDebug, "base_msr: %lx\n", apic_base_msr);
+    if (apic_base_msr & 0b100000000000u) logger::Log(logger::kDebug, "lapic enable\n");
+
     // IOAPICのデバッグプリント
     auto ioapic_err = ioapic::SetIOAPICAddress();
     logger::Log(logger::kDebug, "[%s] I/O APIC Base Addess: 0x%x\n",
@@ -65,13 +72,11 @@ extern "C" void kernel_entry(const boot::bootinfo_t& binfo) {
 
     // IDTの設定
     const uint16_t cs = GetCS();
-    interrupt::SetIDTEntry(interrupt::IDT[0], interrupt::MakeIDTAttr(interrupt::DescriptorType::kInterruptGate, 0), reinterpret_cast<uint64_t>(interrupt::IntHandlerFirstSerialPort), cs);
-    interrupt::SetIDTEntry(interrupt::IDT[1], interrupt::MakeIDTAttr(interrupt::DescriptorType::kInterruptGate, 0), reinterpret_cast<uint64_t>(interrupt::IntHandlerFirstSerialPort), cs);
-    interrupt::SetIDTEntry(interrupt::IDT[2], interrupt::MakeIDTAttr(interrupt::DescriptorType::kInterruptGate, 0), reinterpret_cast<uint64_t>(interrupt::IntHandlerFirstSerialPort), cs);
-    interrupt::SetIDTEntry(interrupt::IDT[3], interrupt::MakeIDTAttr(interrupt::DescriptorType::kInterruptGate, 0), reinterpret_cast<uint64_t>(interrupt::IntHandlerFirstSerialPort), cs);
-    interrupt::SetIDTEntry(interrupt::IDT[4], interrupt::MakeIDTAttr(interrupt::DescriptorType::kInterruptGate, 0), reinterpret_cast<uint64_t>(interrupt::IntHandlerFirstSerialPort), cs);
+    interrupt::SetIDTEntry(interrupt::IDT[32+4], interrupt::MakeIDTAttr(interrupt::DescriptorType::kInterruptGate, 0), reinterpret_cast<uint64_t>(interrupt::IntHandlerFirstSerialPort), cs);
     LoadIDT(sizeof(interrupt::IDT) - 1, reinterpret_cast<uintptr_t>(&interrupt::IDT[0]));
     logger::Log(logger::kDebug, "IDT Setting done.\n");
 
-    while (1) __asm__ volatile("hlt");
+    logger::Log(logger::kDebug, "[%s] UART init.\n", uart::Init().Name());
+
+    while (1) __asm__ volatile("sti; hlt");
 }

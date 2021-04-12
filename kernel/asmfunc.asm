@@ -44,3 +44,17 @@ LoadIDT:
         mov rsp, rbp
         pop rbp
         ret
+
+        global ReadIa32ApicBaseMsrLow ; uint32_t ReadIa32ApicBaseMsrLow();
+ReadIa32ApicBaseMsrLow:
+        mov ecx, 0x1b
+        rdmsr
+        ret
+
+        global ReadIa32ApicBaseMsrHigh ; uint32_t ReadIa32ApicBaseMsrHigh();
+ReadIa32ApicBaseMsrHigh:
+        mov ecx, 0x1b
+        rdmsr
+        mov eax, edx
+        ret
+

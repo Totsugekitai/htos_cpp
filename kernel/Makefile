@@ -38,7 +38,7 @@ AS := nasm
 LD := ld.lld
 LDFLAGS += -T linker.ld -L$(LIBPATH) -z norelro -static
 
-OBJS := main.o graphics.o font.o fonts.gen.o newlib_support.o console.o asmfunc.o pci.o logger.o ioapic.o piix4.o interrupt.o
+OBJS := main.o graphics.o font.o fonts.gen.o newlib_support.o console.o asmfunc.o pci.o logger.o ioapic.o piix4.o interrupt.o uart.o pic.o lapic.o
 LIBS := $(LIBPATH)/libc++.a $(LIBPATH)/libc++abi.a $(LIBPATH)/libc.a
 
 .PHONY: default
