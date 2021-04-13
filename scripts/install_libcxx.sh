@@ -10,10 +10,10 @@ if [ ! -e ${LLVM_DIR} ]; then
 fi
 
 LIBCXX=libc++-${LLVM_VERSION}
-LIBCXX_BUILD_DIR=${HTOS_ROOT}/scripts/build/${LIBCXX}
+LIBCXX_BUILD_DIR=${HTOS_ROOT}/third_party/build/${LIBCXX}
 LIBCXX_SRC_DIR=${LLVM_DIR}/libcxx
 
-NEWLIB_OUT_DIR=${HTOS_ROOT}/scripts/x86_64-elf
+NEWLIB_OUT_DIR=${HTOS_ROOT}/third_party/x86_64-elf
 NEWLIB_INC_PATH=${NEWLIB_OUT_DIR}/include
 
 mkdir -p ${LIBCXX_BUILD_DIR}

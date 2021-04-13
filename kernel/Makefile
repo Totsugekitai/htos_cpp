@@ -31,22 +31,23 @@ CC := clang
 CFLAGS += -O2 -Wall --target=x86_64-elf -ffreestanding -mno-red-zone -std=c11 -I$(LIBCXX_INCLUDE_PATH) -I$(NEWLIB_INCLUDE_PATH) -nostdlibinc -D__ELF__ -D_LDBL_EQ_DBL -D_GNU_SOURCE -D_POSIX_TIMERS
 
 CXX := clang++
-CXXFLAGS += -O2 -Wall --target=x86_64-elf -ffreestanding -mno-red-zone -fno-exceptions -fno-rtti -std=c++17 -I$(LIBCXX_INCLUDE_PATH) -I$(NEWLIB_INCLUDE_PATH) -nostdlibinc -D__ELF__ -D_LDBL_EQ_DBL -D_GNU_SOURCE -D_POSIX_TIMERS
+CXXFLAGS += -O2 -Wall --target=x86_64-elf -ffreestanding -mno-red-zone -fno-exceptions -fno-rtti -std=c++17 -I$(LIBCXX_INCLUDE_PATH) -I$(NEWLIB_INCLUDE_PATH) -I. -nostdlibinc -D__ELF__ -D_LDBL_EQ_DBL -D_GNU_SOURCE -D_POSIX_TIMERS
 
 AS := nasm
 
 LD := ld.lld
 LDFLAGS += -T linker.ld -L$(LIBPATH) -z norelro -static
 
-OBJS := main.o graphics.o font.o fonts.gen.o newlib_support.o console.o $(LIBPATH)/libc++.a $(LIBPATH)/libc++abi.a $(LIBPATH)/libc.a asmfunc.o pci.o
+OBJS := main.o graphics.o font.o fonts.gen.o newlib_support.o console.o asmfunc.o pci.o logger.o ioapic.o piix4.o interrupt.o uart.o pic.o lapic.o
+LIBS := $(LIBPATH)/libc++.a $(LIBPATH)/libc++abi.a $(LIBPATH)/libc.a
 
 .PHONY: default
 default: Makefile
 > make kernel
 
 .PHONY: $(TARGET)
-$(TARGET): $(OBJS) Makefile
-> $(LD) $(LDFLAGS) -o $@ $(OBJS)
+$(TARGET): $(OBJS) $(LIBS) Makefile
+> $(LD) $(LDFLAGS) -o $@ $(OBJS) $(LIBS)
 
 %.o: %.cpp Makefile
 > $(CXX) $(CXXFLAGS) -o $@ -c $<
@@ -64,3 +65,4 @@ kernel: Makefile
 .PHONY: clean
 clean: Makefile
 > rm -rf *.o
+> rm -rf */*.o

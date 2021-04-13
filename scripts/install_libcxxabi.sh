@@ -11,10 +11,10 @@ fi
 
 LIBCXXABI=libc++abi-${LLVM_VERSION}
 
-LIBCXXABI_BUILD_DIR=${HTOS_ROOT}/scripts/build/${LIBCXXABI}
+LIBCXXABI_BUILD_DIR=${HTOS_ROOT}/third_party/build/${LIBCXXABI}
 LIBCXXABI_SRC_DIR=${LLVM_DIR}/libcxxabi
 
-NEWLIB_OUT_DIR=${HTOS_ROOT}/scripts/x86_64-elf
+NEWLIB_OUT_DIR=${HTOS_ROOT}/third_party/x86_64-elf
 NEWLIB_INC_PATH=${NEWLIB_OUT_DIR}/include
 
 LIBCXX_INC_PATH=${LLVM_DIR}/libcxx/include
